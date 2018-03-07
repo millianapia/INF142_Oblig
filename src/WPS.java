@@ -10,28 +10,38 @@ import java.util.Set;
 
         public static void main(String argv[]) throws Exception
         {
+            DatagramPacket dpacket =  listenAndConnect();
+            getHTTP(dpacket);
+
             ServerSocket welcomeSocket = new ServerSocket(6789);
-            while(true) {
-                Socket connectionSocket = welcomeSocket.accept();
-                System.out.println( "Connection received from: " + connectionSocket.getInetAddress().getHostName() );
-                BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-                String clientSentence = inFromClient.readLine();
-                System.out.println( "Data received: " +clientSentence );
-                getHTTP(clientSentence);
-                String capitalizedSentence = clientSentence.toUpperCase() + '\n';
-                outToClient.writeBytes(capitalizedSentence);
-            }
+
+
         }
 
     //TODO: Add return statement
-        static void getHTTP(String urlString) throws Exception{
-            Socket sock = new Socket(urlString, 80);
+        //TCP
+        static void getHTTP(DatagramPacket urlString) throws Exception{
+            String address = new String(urlString.getData());
+            Socket sock = new Socket(address, 80);
             InetAddress addr = sock.getInetAddress();
             System.out.println("Connected to " + addr);
             System.out.println(addr.getHostName());
             System.out.println(addr.getHostAddress());
             sock.close();
+        }
+
+        //UDP
+        static DatagramPacket listenAndConnect()throws Exception{
+            byte[] receiveData = new byte[1024];
+            DatagramSocket dSocket = new DatagramSocket(9876);
+            DatagramPacket dpacket = new DatagramPacket(receiveData, receiveData.length);
+            dSocket.receive(dpacket);
+            return dpacket;
+        }
+
+        //UDP
+        static void sendHTTP(){
+
         }
 
     }

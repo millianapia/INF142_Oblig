@@ -31,7 +31,7 @@ import java.util.Scanner;
             byte[] sendData = address.getBytes();
             byte[] receiveData = new byte[1024];
 
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,IPAddress , 9876);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress , 9876);
             clientSocket.send(sendPacket);
 
 
