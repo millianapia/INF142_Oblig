@@ -1,47 +1,60 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-    class WPS {
-
-//Implementér WPS i Java. (Det finnes forskjellige mekanismer for kommunikasjon mellom en klient og en http-server,
-// men dere skal eksplisitt bruke utveksling av http-meldinger over TCP-socketer.
-
-        public static void main(String argv[]) throws Exception
-        {
-            DatagramPacket dpacket =  listenAndConnect();
-            getHTTP(dpacket);
-
-            ServerSocket welcomeSocket = new ServerSocket(6789);
 
 
+class WPS {
+
+    public static void main(String argv[]) {
+        try {
+            listenAndConnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    //TODO: Add return statement
-        //TCP
-        static void getHTTP(DatagramPacket urlString) throws Exception{
-            String address = new String(urlString.getData());
-            Socket sock = new Socket(address, 80);
-            InetAddress addr = sock.getInetAddress();
-            System.out.println("Connected to " + addr);
-            System.out.println(addr.getHostName());
-            System.out.println(addr.getHostAddress());
-            sock.close();
-        }
-
-        //UDP
-        static DatagramPacket listenAndConnect()throws Exception{
-            byte[] receiveData = new byte[1024];
-            DatagramSocket dSocket = new DatagramSocket(9876);
-            DatagramPacket dpacket = new DatagramPacket(receiveData, receiveData.length);
-            dSocket.receive(dpacket);
-            return dpacket;
-        }
-
-        //UDP
-        static void sendHTTP(){
-
-        }
-
     }
+
+    //TODO: add return statement so we can send it to the client
+    //TCP
+    static void getHTTP(DatagramPacket urlString) throws IOException {
+        String website = new String(urlString.getData());
+        try {
+            //Connect to website through socket
+            Socket socket = new Socket(InetAddress.getByName(website), 80);
+            PrintWriter pw = new PrintWriter(socket.getOutputStream());
+            String request = "GET " + website + " HTTP/1.1\n";
+            request += "Host: " + website;
+            request += "\n\n";
+            //println or print?
+            pw.print(request);
+            pw.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String text;
+            while ((text = br.readLine()) != null) {
+                //return text;
+                System.out.println(text);
+            }
+            br.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO: fix sending back to client
+    //UDP
+    static void listenAndConnect() throws Exception {
+        byte[] receiveData = new byte[1024];
+        DatagramSocket dSocket = new DatagramSocket(9876);
+        DatagramPacket dPacket = new DatagramPacket(receiveData, receiveData.length);
+        while (true) {
+            dSocket.receive(dPacket);
+            getHTTP(dPacket);
+            //byte[] sendData = sendBack.getBytes();
+            //DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length);
+            dSocket.send(dPacket);
+        }
+    }
+
+
+}
