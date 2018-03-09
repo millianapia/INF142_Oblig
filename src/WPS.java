@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.*;
 
 
@@ -20,11 +17,15 @@ class WPS {
     static void getHTTP(DatagramPacket urlString) throws IOException {
         String website = new String(urlString.getData());
         try {
+            URL url = new URL(website);
+            String host = url.getHost();
+            String path = url.getPath();
+            int port = url.getPort();
             //Connect to website through socket
-            Socket socket = new Socket(InetAddress.getByName(website), 80);
+            Socket socket = new Socket(InetAddress.getByName(website), port);
             PrintWriter pw = new PrintWriter(socket.getOutputStream());
-            String request = "GET " + website + " HTTP/1.1\n";
-            request += "Host: " + website;
+            String request = "GET " + path  + " HTTP/1.1\n";
+            request += "Host: " + host;
             request += "\n\n";
             //println or print?
             pw.print(request);
@@ -36,6 +37,8 @@ class WPS {
                 System.out.println(text);
             }
             br.close();
+            socket.close();
+            pw.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,7 +56,11 @@ class WPS {
             //byte[] sendData = sendBack.getBytes();
             //DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length);
             dSocket.send(dPacket);
+            //Do i need to close this?
+            //dSocket.close();
+
         }
+
     }
 
 

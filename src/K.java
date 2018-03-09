@@ -1,13 +1,10 @@
-import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-//Implementér klienten K i Java. Kommunikasjon mellom K og WPS skal foregå ved hjelp av UDP. K skal skrive ut
-// (på standard utputt) alle innkommende meldinger fra WPS.
 
-
+//TODO: Remove link underneath
 //https://www.google.no
 
-class client {
+class K {
     public static void main(String args[]) throws Exception {
         try {
             //TODO: find out why "/" makes it crash
@@ -16,8 +13,8 @@ class client {
             String address = inn.nextLine();
             System.out.println("Are you going to send path? (y/n): ");
             String answer = inn.nextLine();
-            //remove "/" if testing
-            String path = "/";
+            //remove "/" if testing or add it if need help
+            String path = "";
             if (answer.equals("y")) {
                 System.out.println("Enter path:");
                 path = inn.nextLine();
