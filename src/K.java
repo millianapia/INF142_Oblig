@@ -13,13 +13,11 @@ class K {
             String address = inn.nextLine();
             System.out.println("Are you going to send path? (y/n): ");
             String answer = inn.nextLine();
-            //remove "/" if testing or add it if need help
-            String path = "";
+            String path = "/";
             if (answer.equals("y")) {
                 System.out.println("Enter path:");
                 path = inn.nextLine();
             }
-
             address = address + path;
             inn.close();
 
