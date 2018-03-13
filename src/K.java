@@ -1,13 +1,12 @@
 import java.net.*;
 import java.util.Scanner;
 
-//TODO: Remove link underneath
-//https://www.google.no
+
 
 class K {
     public static void main(String args[]) throws Exception {
         try {
-            //TODO: find out why "/" makes it crash
+            //User prompt
             Scanner inn = new Scanner(System.in);
             System.out.println("Enter address: ");
             String address = inn.nextLine();
